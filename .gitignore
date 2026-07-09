@@ -1,0 +1,36 @@
+# macOS
+.DS_Store
+
+# environment variables
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node / React
+node_modules/
+dist/
+build/
+.vite/
+
+# AWS CDK
+cdk.out/
+
+# Logs
+*.log
+
+# Local databases
+*.sqlite
+*.db
+
+# IDE
+.vscode/
+.idea/
