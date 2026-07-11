@@ -1,0 +1,32 @@
+[
+  {
+    "id": "fryer-policy",
+    "title": "Shared fryer policy",
+    "text": "The fryer is shared with battered fish and breaded chicken on Tuesdays and Thursdays only. On those days, cross-contact with gluten and fish allergens is possible even for items not listed as containing them."
+  },
+  {
+    "id": "see-chef-meaning",
+    "title": "What 'see chef' means",
+    "text": "Dishes marked 'see chef' change recipe week to week depending on what's in stock, so the printed board can't keep up. Always ask the chef directly before serving one of these to a guest with a declared allergy."
+  },
+  {
+    "id": "ask-counter-meaning",
+    "title": "What 'ask counter' means",
+    "text": "'Ask counter' items are pre-packaged by an external supplier and the full allergen label is kept behind the till, not on the menu board. Counter staff can read the supplier label out on request."
+  },
+  {
+    "id": "may-contain-meaning",
+    "title": "What 'may contain traces' means",
+    "text": "'May contain traces' is used when the kitchen can't guarantee an allergen-free environment for that ingredient, usually because of shared prep surfaces or a supplier packaging warning, not because the allergen is a deliberate ingredient in the recipe."
+  },
+  {
+    "id": "nut-site-policy",
+    "title": "Nut handling on site",
+    "text": "This is not a nut-free site. Any dish without a nut allergen listed may still be at risk from shared prep surfaces during a busy service. Guests with a severe or anaphylactic nut allergy should always confirm with a supervisor rather than relying on the printed menu alone."
+  },
+  {
+    "id": "dairy-free-swaps",
+    "title": "Dairy-free and vegan swaps available",
+    "text": "Jacket potato with beans can be made vegan by asking for dairy-free spread instead of butter. Halloumi wrap has no vegan or dairy-free swap available at this counter."
+  }
+]

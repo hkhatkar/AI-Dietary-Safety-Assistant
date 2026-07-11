@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Chicken katsu curry",
+    "allergen_notes_raw": "gluten, soya",
+    "kcal_raw": "620",
+    "price_gbp": 5.20
+  },
+  {
+    "name": "Veggie chilli (vegan?)",
+    "allergen_notes_raw": "celery. may contain traces of nuts",
+    "kcal_raw": null,
+    "price_gbp": 4.50
+  },
+  {
+    "name": "Margherita pizza slice",
+    "allergen_notes_raw": "WHEAT, MILK",
+    "kcal_raw": "310",
+    "price_gbp": 2.80
+  },
+  {
+    "name": "Thai green curry",
+    "allergen_notes_raw": "see chef",
+    "kcal_raw": null,
+    "price_gbp": 5.20
+  },
+  {
+    "name": "Jacket potato with beans",
+    "allergen_notes_raw": "none",
+    "kcal_raw": "480",
+    "price_gbp": 3.95
+  },
+  {
+    "name": "Flapjack",
+    "allergen_notes_raw": "oats, butter, golden syrup, peanuts??",
+    "kcal_raw": null,
+    "price_gbp": 1.60
+  },
+  {
+    "name": "Halloumi wrap",
+    "allergen_notes_raw": "milk, wheat, sesame (wrap)",
+    "kcal_raw": "540",
+    "price_gbp": 4.80
+  },
+  {
+    "name": "Beef lasagne",
+    "allergen_notes_raw": "gluten milk celery",
+    "kcal_raw": "700+",
+    "price_gbp": 5.50
+  },
+  {
+    "name": "Fruit pot",
+    "allergen_notes_raw": "null",
+    "kcal_raw": "90",
+    "price_gbp": 2.10
+  },
+  {
+    "name": "Katsu sando (special)",
+    "allergen_notes_raw": "ask counter",
+    "kcal_raw": null,
+    "price_gbp": 4.95
+  }
+]
