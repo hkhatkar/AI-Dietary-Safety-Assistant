@@ -10,6 +10,7 @@ from .config import DYNAMODB_TABLE_NAME
 
 _FORBIDDEN = re.compile(r"\b(INSERT|UPDATE|DELETE)\b", re.IGNORECASE)
 _SELECT_ONLY = re.compile(r"^\s*SELECT\b", re.IGNORECASE)
+_SELECT_STAR = re.compile(r"^\s*SELECT\s+\*\s+FROM\b", re.IGNORECASE)
 
 
 class UnsafeQueryError(ValueError):
@@ -28,7 +29,8 @@ def sanitize_select(statement: str) -> str:
 
     Raises:
         UnsafeQueryError: If the statement is empty, contains multiple statements, isn't a
-            SELECT, contains a forbidden keyword, or doesn't reference the dishes table.
+            SELECT, selects a subset of columns instead of "*", contains a forbidden keyword,
+            or doesn't reference the dishes table.
     """
     cleaned = statement.strip().rstrip(";").strip()
 
@@ -38,6 +40,13 @@ def sanitize_select(statement: str) -> str:
         raise UnsafeQueryError("Multiple statements are not allowed")
     if not _SELECT_ONLY.match(cleaned):
         raise UnsafeQueryError("Only SELECT statements are allowed")
+    if not _SELECT_STAR.match(cleaned):
+        # A column subset (e.g. "SELECT id, name FROM ...") silently breaks dataset scoping:
+        # db.run_read_only_query() filters rows by their "dataset" attribute after the fact,
+        # which only survives deserialization if it was actually selected. Rejecting here
+        # falls back to a full table scan (always SELECT *) rather than silently returning
+        # zero rows for every dish in the dataset.
+        raise UnsafeQueryError("Only \"SELECT *\" is allowed, not a column subset")
     if _FORBIDDEN.search(cleaned):
         raise UnsafeQueryError("Query contains a disallowed keyword")
     if DYNAMODB_TABLE_NAME.lower() not in cleaned.lower():

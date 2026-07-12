@@ -41,17 +41,21 @@ function App() {
     <div className="page">
       <header className="page-header">
         <h1>Can I eat this?</h1>
-        <p>An AI dining safety assistant for the thirty-second decision at the counter.</p>
+        <p>AI-powered allergen and dietary guidance for confident dining decisions.</p>
       </header>
 
+      <div
+        className="dev-toggle"
+        title="Demo control, not part of the deployed product - lets you compare the assistant's behavior on incomplete, real-world menu data versus complete data. A real deployment would only ever have one menu."
+      >
+        <span className="dev-toggle-label">🛠️ Debug</span>
+        <select value={dataset} onChange={(e) => setDataset(e.target.value as Dataset)}>
+          <option value="messy">Messy menu (10 dishes)</option>
+          <option value="clean">Clean menu (50 dishes)</option>
+        </select>
+      </div>
+
       <form className="query-form" onSubmit={handleSubmit}>
-        <label>
-          Menu data source
-          <select value={dataset} onChange={(e) => setDataset(e.target.value as Dataset)}>
-            <option value="messy">Messy real-world menu (10 dishes, from the brief)</option>
-            <option value="clean">Clean, complete menu (50 dishes)</option>
-          </select>
-        </label>
         <label>
           Allergy or dietary need
           <input

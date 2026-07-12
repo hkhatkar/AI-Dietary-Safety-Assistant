@@ -72,15 +72,16 @@ the site against the real backend URL. On every deploy after that, both stay in 
 automatically as long as `.env` has the right value.
 
 **On a genuinely fresh deploy** (an AWS account/region that's never had this stack before), the
-first deploy has, in practice, succeeded cleanly (tested via a full `cdk destroy` + `cdk deploy`
-cycle) — a full stack deploy takes long enough end-to-end that by the time CloudFormation
-reaches `NotesIndex`, the access policy it depends on has usually had time to propagate. It's
-still possible in principle to see it fail with `AccessDenied: Access denied to get index` if
-the timing is unlucky; if that happens, just wait about a minute and run `npx cdk deploy` again -
-CloudFormation resumes from where it left off. Don't work around this by making the index
-resource conditional on an env var flag - that was tried and is worse: forgetting to pass the
-flag on a later deploy makes CDK see the resource as removed and **delete the index** (and all
-its documents) even though nothing else changed.
+`NotesIndex` resource depends on an `AccessPolicyPropagationDelay` custom resource - a tiny
+Lambda that does nothing but sleep for 2 minutes, inserted specifically because OpenSearch
+Serverless access policies take a short time to actually propagate after creation. Without this
+wait, creating the index in the same deploy as a brand-new access policy can fail with
+`AccessDenied: Access denied to create index` - and because that happens during the stack's
+*first-ever* creation, CloudFormation rolls back the entire stack, not just the failed resource
+(this was hit for real multiple times before the delay was added; a retry-in-place doesn't
+"resume" the way it does for an update to an already-existing stack). The 2-minute margin has
+been generous enough in practice that this hasn't recurred since - if AWS propagation is ever
+slower than that, `cdk destroy` and redeploy rather than retrying the same failed stack.
 
 ## Tear down
 

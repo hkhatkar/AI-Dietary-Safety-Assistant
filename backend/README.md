@@ -54,7 +54,11 @@ nested under `backend/`).
 - **`app/db.py`** queries DynamoDB via `execute_statement` (PartiQL). PartiQL for DynamoDB has
   no `LIKE` or `LOWER()`, so name matching uses `contains("name_lower", ...)` against a
   lowercased shadow field seeded alongside the display-cased `name` - see the comment in
-  `infra/lib/infra-stack.ts` where it's seeded.
+  `infra/lib/infra-stack.ts` where it's seeded. Its dataset-scoping filter (`row.get("dataset")
+  == dataset`) only works if the `dataset` attribute was actually selected - `app/sql_guard.py`
+  enforces `SELECT *` on every LLM-generated query specifically to guarantee this, after a
+  column-subset query (e.g. `SELECT "id", "name", "allergen_notes_raw"`) once silently filtered
+  out every matching row.
 - **`app/opensearch_client.py`** signs requests to OpenSearch Serverless's data-plane API
   directly with `botocore` (no `opensearch-py`/`requests` dependency needed). Two non-obvious
   requirements it handles: OpenSearch Serverless rejects body-bearing requests with a generic
