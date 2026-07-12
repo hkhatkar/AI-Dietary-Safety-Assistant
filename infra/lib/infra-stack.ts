@@ -216,10 +216,39 @@ export class InfraStack extends cdk.Stack {
       }),
     );
 
-    // Note: OpenSearch Serverless access policies take a short time to propagate after
-    // creation - creating this index resource in the very same deploy as a brand-new access
-    // policy can fail with AccessDenied. Once the policy has been live for a minute or so
-    // (true for any deploy after the first), this creates cleanly.
+    // OpenSearch Serverless access policies take a short time to actually propagate after
+    // creation. Creating the index in the very same deploy as a brand-new access policy has
+    // repeatedly failed with AccessDenied - not consistently, since it's a race, but often
+    // enough to be a real problem, and worse now that faster npm/pip caching means less
+    // incidental time passes between the policy and the index during a normal deploy. On a
+    // fresh stack, that failure rolls back the *entire* stack (CloudFormation's behavior for
+    // any CREATE_FAILED during a stack creation, not just this resource), not just the index.
+    //
+    // Fixed with a real, deliberate wait: a tiny custom resource whose Lambda handler does
+    // nothing but sleep, inserted as an explicit dependency between the access policy and the
+    // index. This replaces the old approach of manually commenting out the index, deploying,
+    // then restoring it and deploying again (see infra/README.md's git history) - that
+    // required a human to babysit every fresh deploy, which doesn't scale.
+    const accessPolicyPropagationDelay = new lambda.Function(this, 'AccessPolicyPropagationDelayFn', {
+      runtime: lambda.Runtime.PYTHON_3_12,
+      handler: 'index.handler',
+      timeout: cdk.Duration.minutes(3),
+      code: lambda.Code.fromInline(
+        'import time\n' +
+        'def handler(event, context):\n' +
+        '    if event["RequestType"] == "Create":\n' +
+        '        time.sleep(120)\n' +
+        '    return {"PhysicalResourceId": "access-policy-propagation-delay"}\n',
+      ),
+    });
+    const accessPolicyPropagationDelayProvider = new cr.Provider(this, 'AccessPolicyPropagationDelayProvider', {
+      onEventHandler: accessPolicyPropagationDelay,
+    });
+    const accessPolicyPropagationDelayResource = new cdk.CustomResource(this, 'AccessPolicyPropagationDelay', {
+      serviceToken: accessPolicyPropagationDelayProvider.serviceToken,
+    });
+    accessPolicyPropagationDelayResource.node.addDependency(notesDataAccessPolicy);
+
     const notesIndex = new aoss.CfnCollectionIndex(this, 'NotesIndex', {
       id: notesCollection.attrId,
       indexName: 'kitchen-notes',
@@ -239,7 +268,7 @@ export class InfraStack extends cdk.Stack {
         },
       }),
     });
-    notesIndex.addDependency(notesDataAccessPolicy);
+    notesIndex.node.addDependency(accessPolicyPropagationDelayResource);
 
     apiFunction.addEnvironment('OPENSEARCH_ENDPOINT', notesCollection.attrCollectionEndpoint);
 

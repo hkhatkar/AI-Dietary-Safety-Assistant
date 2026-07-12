@@ -120,6 +120,9 @@ deployed site.
 - `docs/` — the pitch deck (`CanIEatThis_Pitch.pdf` / `.pptx`, with speaker notes) - **note:**
   slides 6, 8, and 9 still describe the previous local-SQLite/in-memory-comparison
   architecture, not this one; worth a revisit before presenting
+- `Makefile` — one-command deploy/destroy (`make deploy` / `make destroy`); see "Deploy to AWS
+  yourself" above
+- `CODING_STANDARDS.md` — the Google-style Python/TypeScript conventions this codebase follows
 
 ## Notes
 
